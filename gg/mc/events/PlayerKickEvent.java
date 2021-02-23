@@ -7,6 +7,7 @@ public class PlayerKickEvent extends Event {
 	public static enum Reason {
 		BANNED,
 		SERVER_FULL,
+		SERVER_SHUTDOWN,
 		WHITELIST,
 		LOST_CONNECTION,
 		PLUGIN_KICK

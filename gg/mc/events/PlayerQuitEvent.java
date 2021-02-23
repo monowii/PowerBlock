@@ -11,7 +11,7 @@ public class PlayerQuitEvent extends Event {
 	
 	public PlayerQuitEvent(Player player) {
 		this.player = player;
-		this.quitMessage = ChatColor.YELLOW + player.getUsername() + " disconnected :(";
+		this.quitMessage = ChatColor.YELLOW + player.getUsername() + " left the game";
 	}
 	
 	@Override

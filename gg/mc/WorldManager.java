@@ -7,6 +7,7 @@ import gg.mc.exceptions.WorldExistsException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class WorldManager {
 
@@ -42,7 +43,7 @@ public class WorldManager {
 			throw new WorldExistsException(name);
 		}
 		if (World.exists(name)) {
-			System.out.println("World '" + name + "' already exists in hard drive, loading that instead!");
+			Logger.getGlobal().info("World '" + name + "' already exists in hard drive, loading that instead!");
 			worlds.put(name, new World(name));
 			return;
 		}
@@ -64,7 +65,7 @@ public class WorldManager {
 			getWorld(name).save();
 		}
 		worlds.remove(name);
-		System.out.println("Removed world '" + name + "'.");
+		Logger.getGlobal().info("Removed world '" + name + "'.");
 	}
 	
 	public World getMainWorld() {

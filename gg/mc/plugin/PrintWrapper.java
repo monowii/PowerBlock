@@ -1,6 +1,7 @@
 package gg.mc.plugin;
 
 import java.io.PrintStream;
+import java.util.logging.Logger;
 
 public class PrintWrapper extends PrintStream {
 	
@@ -18,6 +19,6 @@ public class PrintWrapper extends PrintStream {
 	
 	@Override
 	public void print(String stuff) {
-		System.out.print("[" + plugin.getPluginName() + "] " + stuff);
+		Logger.getGlobal().info("[" + plugin.getPluginName() + "] " + stuff);
 	}
 }

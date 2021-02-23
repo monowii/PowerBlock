@@ -1,5 +1,6 @@
 package gg.mc.events;
 
+import gg.mc.ChatColor;
 import gg.mc.Player;
 
 public class PlayerChatEvent extends Event {
@@ -12,9 +13,8 @@ public class PlayerChatEvent extends Event {
 		this.player = player;
 		this.message = message;
 		StringBuilder sb = new StringBuilder();
-		sb.append("<");
-		sb.append(player.getUsername());
-		sb.append("> ");
+		sb.append(ChatColor.YELLOW + player.getUsername());
+		sb.append(ChatColor.WHITE + ": ");
 		sb.append(message);
 		this.format = sb.toString();
 	}

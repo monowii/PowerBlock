@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 import org.mozilla.javascript.Context;
 
@@ -63,7 +64,7 @@ public class PluginManager {
 					Plugin plugin = new Plugin(this, pluginName, author, version, script);
 					plugins.put(pluginName, plugin);
 					plugin.onEnable();
-					System.out.println("Enabled plugin " + plugin.getPluginName());
+					Logger.getGlobal().info("Enabled plugin " + plugin.getPluginName());
 				}
 				catch (InvalidPluginException ex) {
 					ex.printStackTrace();
@@ -166,7 +167,7 @@ public class PluginManager {
 			ex.printStackTrace();
 		}
 		if (!handled) {
-			player.sendMessage(ChatColor.WHITE + "Unknown command. Type /help for help.");
+			player.sendMessage(ChatColor.WHITE + "Unknown command.");
 		}
 	}
 	
@@ -185,7 +186,7 @@ public class PluginManager {
 			ex.printStackTrace();
 		}
 		if (!handled) {
-			System.out.println("Unknown command '" + command + "'. Type 'help' for help.");
+			Logger.getGlobal().info("Unknown command '" + command + "'. Type 'help' for help.");
 		}
 	}
 	

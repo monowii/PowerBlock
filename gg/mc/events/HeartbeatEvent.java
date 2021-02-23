@@ -5,15 +5,17 @@ public class HeartbeatEvent extends Event {
 	private int port;
 	private int maxPlayers;
 	private String name;
-	private String isPublic;
+	private boolean isPublic;
 	private int onlinePlayers;
+	private boolean allowWebClient;
 	
-	public HeartbeatEvent(int port, int maxPlayers, String name, String isPublic, int onlinePlayers) {
+	public HeartbeatEvent(int port, int maxPlayers, String name, boolean isPublic, int onlinePlayers, boolean allowWebClient) {
 		this.port = port;
 		this.maxPlayers = maxPlayers;
 		this.name = name;
 		this.isPublic = isPublic;
 		this.onlinePlayers = onlinePlayers;
+		this.allowWebClient = allowWebClient;
 	}
 	
 	public int getPort() {
@@ -29,10 +31,6 @@ public class HeartbeatEvent extends Event {
 	}
 	
 	public boolean isPublic() {
-		return isPublic == "True";
-	}
-	
-	public String getPublicName() {
 		return isPublic;
 	}
 	
@@ -49,10 +47,18 @@ public class HeartbeatEvent extends Event {
 	}
 	
 	public void setIsPublic(boolean isPublic) {
-		this.isPublic = (isPublic == true ? "True" : "False");
+		this.isPublic = isPublic;
 	}
 	
 	public void setPlayerCount(int players) {
 		this.onlinePlayers = players;
+	}
+
+	public boolean isAllowWebClient() {
+		return allowWebClient;
+	}
+
+	public void setAllowWebClient(boolean allowWebClient) {
+		this.allowWebClient = allowWebClient;
 	}
 }

@@ -50,4 +50,8 @@ public class Position {
 	public byte getPitch() {
 		return pitch;
 	}
+
+	public String toString() {
+		return "[Position] x" + getX() + " y" + getY() + " z" + getZ();
+	}
 }

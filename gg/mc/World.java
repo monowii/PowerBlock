@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -50,13 +51,13 @@ public class World {
 		for (int i = 0; i < data.length; i++) {
 			data[i] = 0;
 		}
-		for (int i = 0; i < (length * depth * height * 0.5); i++) {
+		for (int i = 0; i < (length * depth); i++) {
 			data[i] = Block.Grass;
 		}
 		for (int i = 0; i < availableEids.length; i++) {
 			availableEids[i] = true;
 		}
-		spawn = new Position(length / 2, (height / 2) + 3, depth / 2, (byte) 0, (byte) 0);
+		spawn = new Position((length / 2)*32, ((height / 2) + 3)*32, (depth / 2)*32, (byte) 0, (byte) 0);
 	}
 	
 	public World(String name) {
@@ -87,7 +88,7 @@ public class World {
 			gis.close();
 		}
 		catch (Exception ex) {
-			System.out.println("Failed to load map '" + name + "'!");
+			Logger.getGlobal().warning("Failed to load map '" + name + "'!");
 		}
 	}
 	
@@ -111,7 +112,7 @@ public class World {
 			gos.close();
 		}
 		catch (Exception ex) {
-			System.out.println("Failed to save map '" + name + "'!");
+			Logger.getGlobal().warning("Failed to save map '" + name + "'!");
 			ex.printStackTrace();
 		}
 	}

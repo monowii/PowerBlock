@@ -1,7 +1,6 @@
 package gg.mc;
 
 public class Block {
-	
 	public static final byte Air = (byte) 0;
 	public static final byte Stone = (byte) 1;
 	public static final byte Grass = (byte) 2;

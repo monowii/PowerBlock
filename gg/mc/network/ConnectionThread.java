@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class ConnectionThread extends Thread {
 
@@ -40,8 +41,8 @@ public class ConnectionThread extends Thread {
 			this.salt = sb.toString();
 		}
 		catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("Failed to bind to port 25565 - Is it available?");
+			Logger.getGlobal().warning("Failed to bind to port 25565 - Is it available? " + ex.getMessage());
+			System.exit(1);
 			return;
 		}
 		try {
@@ -50,7 +51,7 @@ public class ConnectionThread extends Thread {
 				Socket s = null;
 				try {
 					s = serverSocket.accept();
-					System.out.println(s.getRemoteSocketAddress().toString() + " has connected!");
+					Logger.getGlobal().info(s.getRemoteSocketAddress().toString() + " connected");
 					synchronized (loginQueue) {
 						loginQueue.add(new Player(this, s));
 					}
@@ -61,7 +62,7 @@ public class ConnectionThread extends Thread {
 				}
 				catch (IOException ex) {
 					if (s != null) {
-						System.out.println("Failed to handle connection from " + s.getRemoteSocketAddress().toString());
+						Logger.getGlobal().info("Failed to handle connection from " + s.getRemoteSocketAddress().toString());
 					}
 				}
 			}
@@ -73,7 +74,7 @@ public class ConnectionThread extends Thread {
 				serverSocket.close();
 			}
 			catch (IOException e) {
-				System.out.println("Socket was already closed, wth, gypsy magic");
+				Logger.getGlobal().info("Socket was already closed, wth, gypsy magic");
 			}
 		}
 	}
@@ -122,9 +123,10 @@ public class ConnectionThread extends Thread {
 			if (loginQueue.remove(p)) {
 				if (clients.get(p.getUsername()) != null) {
 					clients.get(p.getUsername()).kick("You logged in from another location!", Reason.LOST_CONNECTION);
+					Logger.getGlobal().info(p.getUsername() + " logged from another location");
 				}
 				clients.put(p.getUsername(), p);
-				System.out.println(p.getUsername() + " has logged in");
+				Logger.getGlobal().info(p.getUsername() + " has logged in");
 			}
 			else {
 				throw new NoSuchPlayerException();

@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.logging.Logger;
 
 public class HeartbeatThread extends Thread {
 
@@ -26,23 +27,24 @@ public class HeartbeatThread extends Thread {
 		try {
 			while (true) {
 				try {
-					// Event
 					Configuration c = PowerBlock.getServer().getConfiguration();
-					HeartbeatEvent e = new HeartbeatEvent(c.getServerPort(), c.getMaxPlayers(), c.getServerName(), "True", 0);
+					HeartbeatEvent e = new HeartbeatEvent(c.getServerPort(), c.getMaxPlayers(), c.getServerName(), c.isPublic(), PowerBlock.getServer().getOnlinePlayers().length, c.isAllowWebClient());
 					PowerBlock.getServer().getPluginManager().callEvent(e);
 					if (e.isCancelled()) {
 						throw new HeartbeatCancelledException();
 					}
 					
 					StringBuilder sb = new StringBuilder();
-					sb.append("https://minecraft.net/heartbeat.jsp?");
+					sb.append(PowerBlock.getServer().getConfiguration().getHeartbeatUrl());
 					sb.append("port=" + e.getPort());
 					sb.append("&max=" + e.getMaxPlayers());
 					sb.append("&name=" + e.getName());
-					sb.append("&public=" + e.getPublicName());
+					sb.append("&public=" + e.isPublic());
 					sb.append("&version=7");
 					sb.append("&salt=" + connectionThread.getSalt());
 					sb.append("&users=" + e.getPlayerCount());
+					sb.append("&software=PowerBlockFork");
+					sb.append("&web=" + e.isAllowWebClient());
 					URL url = new URL(sb.toString().replace(" ", "%20"));
 					BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 					StringBuilder respo = new StringBuilder();
@@ -53,12 +55,13 @@ public class HeartbeatThread extends Thread {
 					}
 					br.close();
 					if (!hasSuccess) {
-						System.out.println("Server says: " + respo.toString());
+						Logger.getGlobal().info("Heartbeat No sucess, server says: " + respo.toString());
 						hasSuccess = true;
 					}
 				}
 				catch (IOException ex) {
-					System.out.println("Failed to send heartbeat to minecraft.net, is it down?");
+					ex.printStackTrace();
+					Logger.getGlobal().info("Failed to send heartbeat, is it down?");
 				}
 				catch (HeartbeatCancelledException ex) {
 					// In the future print which plugin cancelled?

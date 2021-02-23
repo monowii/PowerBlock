@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.security.MessageDigest;
+import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
 import gg.mc.events.BlockBreakEvent;
@@ -67,7 +68,7 @@ public class Player {
 					byte[] token = (connectionThread.getSalt() + ident.getUsername()).getBytes("UTF-8");
 					md5.update(token);
 					String verificationToken = new BigInteger(1, md5.digest()).toString(16);
-					if (verificationToken.equals(ident.getVerificationKey())) {
+					if (verificationToken.equals(ident.getVerificationKey()) || !PowerBlock.getServer().getConfiguration().isVerifyUsername()) {
 						username = ident.getUsername().trim();
 						loggedIn = true;
 						Configuration config = PowerBlock.getServer().getConfiguration();
@@ -139,6 +140,7 @@ public class Player {
 						for (int i = 1; i < rawStuff.length; i++) {
 							cmdArgs[i - 1] = rawStuff[i];
 						}
+						Logger.getGlobal().info("[CMD] " + getUsername() + ": " + packet.getMessage());
 						PowerBlock.getServer().getPluginManager().callPlayerCommand(this, cmd, cmdArgs);
 					}
 					else {
@@ -197,6 +199,7 @@ public class Player {
 			
 			this.entityId = world.requestEntityId();
 			world.broadcastWorldPacket(new Packet7SpawnPlayer(entityId, getUsername(), spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(), spawn.getPitch()));
+			this.push(new Packet7SpawnPlayer(entityId, getUsername(), (short)0, (short)0, (short)0, (byte)0, (byte)0));
 			Player[] players = PowerBlock.getServer().getOnlinePlayers();
 			for (int i = 0; i < players.length; i++) {
 				if (players[i].getWorld() == world) {
@@ -250,7 +253,6 @@ public class Player {
 		}
 		disconnected = true;
 		if (loggedIn) {
-			// Event
 			PlayerQuitEvent ev = new PlayerQuitEvent(this);
 			PowerBlock.getServer().getPluginManager().callEvent(ev);
 			if (ev.getQuitMessage() != null) {

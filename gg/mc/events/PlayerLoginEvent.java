@@ -10,7 +10,7 @@ public class PlayerLoginEvent extends Event {
 	
 	public PlayerLoginEvent(Player player) {
 		this.player = player;
-		this.joinMessage = ChatColor.YELLOW + player.getUsername() + " has connected!";
+		this.joinMessage = ChatColor.YELLOW + player.getUsername() + " joined the game";
 	}
 	
 	public Player getPlayer() {
