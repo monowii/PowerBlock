@@ -8,6 +8,14 @@ import java.io.InputStream;
 
 public class PacketInputStream {
 
+	private DataInputStream inputStream;
+	private byte currentHeader = (byte) -1;
+	private byte[] payload;
+
+	public PacketInputStream(InputStream inputStream) {
+		this.inputStream = new DataInputStream(inputStream);
+	}
+
 	public static int getPacketLength(byte header) {
 		int waitingLength = -1;
 		switch (header) {
@@ -29,21 +37,12 @@ public class PacketInputStream {
 		}
 		return waitingLength;
 	}
-	
-	private DataInputStream inputStream;
-	private byte currentHeader = (byte) -1;
-	private byte[] payload;
-	
-	public PacketInputStream(InputStream inputStream) {
-		this.inputStream = new DataInputStream(inputStream);
-	}
-	
+
 	public boolean hasPacket() throws IOException {
 		if (currentHeader == -1) {
 			if (inputStream.available() > 0) {
 				currentHeader = inputStream.readByte();
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
@@ -52,11 +51,13 @@ public class PacketInputStream {
 		}
 		return false;
 	}
-	
+
 	public Packet nextPacket() throws IOException {
 		while (!hasPacket()) {
-			try { Thread.sleep(10); }
-			catch (Exception ex) { }
+			try {
+				Thread.sleep(10);
+			} catch (Exception ex) {
+			}
 		}
 		payload = new byte[getPacketLength(currentHeader)];
 		inputStream.read(payload);

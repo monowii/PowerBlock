@@ -13,7 +13,7 @@ public class Packet8Position extends Packet {
 	private short zPos;
 	private byte yaw;
 	private byte pitch;
-	
+
 	public Packet8Position(byte[] payload) {
 		super((byte) 0x08, payload);
 		ByteArrayInputStream bis = new ByteArrayInputStream(payload);
@@ -25,10 +25,9 @@ public class Packet8Position extends Packet {
 			this.zPos = dis.readShort();
 			this.yaw = dis.readByte();
 			this.pitch = dis.readByte();
-		}
-		catch (Exception ex) { /* Should never happen */ }
+		} catch (Exception ex) { /* Should never happen */ }
 	}
-	
+
 	public Packet8Position(byte entityId, short xPos, short yPos, short zPos, byte yaw, byte pitch) {
 		super((byte) 0x08);
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -40,31 +39,30 @@ public class Packet8Position extends Packet {
 			dos.writeShort(zPos);
 			dos.writeByte(yaw);
 			dos.writeByte(pitch);
-		}
-		catch (Exception ex) { /* Should never happen */ }
+		} catch (Exception ex) { /* Should never happen */ }
 		this.setPayload(bos.toByteArray());
 	}
-	
+
 	public byte getEntityId() {
 		return entityId;
 	}
-	
+
 	public short getXPos() {
 		return xPos;
 	}
-	
+
 	public short getYPos() {
 		return yPos;
 	}
-	
+
 	public short getZPos() {
 		return zPos;
 	}
-	
+
 	public byte getYaw() {
 		return yaw;
 	}
-	
+
 	public byte getPitch() {
 		return pitch;
 	}

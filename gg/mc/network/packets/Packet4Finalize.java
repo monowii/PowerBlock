@@ -8,14 +8,8 @@ public class Packet4Finalize extends Packet {
 		byte[] h = Packet.getBytes(height);
 		byte[] d = Packet.getBytes(depth);
 		this.payload = new byte[6];
-		for (int i = 0; i < 2; i++) {
-			this.payload[i] = w[i];
-		}
-		for (int i = 2; i < 4; i++) {
-			this.payload[i] = h[i - 2];
-		}
-		for (int i = 4; i < 6; i++) {
-			this.payload[i] = d[i - 4];
-		}
+		System.arraycopy(w, 0, this.payload, 0, 2);
+		System.arraycopy(h, 0, this.payload, 2, 2);
+		System.arraycopy(d, 0, this.payload, 4, 2);
 	}
 }

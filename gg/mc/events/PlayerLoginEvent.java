@@ -7,23 +7,23 @@ public class PlayerLoginEvent extends Event {
 
 	private Player player;
 	private String joinMessage;
-	
+
 	public PlayerLoginEvent(Player player) {
 		this.player = player;
 		this.joinMessage = ChatColor.YELLOW + player.getUsername() + " joined the game";
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public String getJoinMessage() {
 		return joinMessage;
 	}
-	
+
 	public void setJoinMessage(String message) {
 		joinMessage = message;
-		if (joinMessage == "") {
+		if (joinMessage.equals("")) {
 			joinMessage = null;
 		}
 	}

@@ -1,7 +1,7 @@
 package gg.mc.network.packets;
 
 public class Packet6SetBlock extends Packet {
-	
+
 	public Packet6SetBlock(short x, short y, short z, byte block) {
 		super((byte) 0x06);
 		// Lets do this the long way, save mem. ideally, setblock will be called a lot. primitives are better

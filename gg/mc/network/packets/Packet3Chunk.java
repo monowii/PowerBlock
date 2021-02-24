@@ -1,8 +1,8 @@
 package gg.mc.network.packets;
 
-import java.io.ByteArrayOutputStream;
-
 import gg.mc.exceptions.InvalidChunkException;
+
+import java.io.ByteArrayOutputStream;
 
 public class Packet3Chunk extends Packet {
 
@@ -16,8 +16,7 @@ public class Packet3Chunk extends Packet {
 			bos.write(Packet.getBytes(length));
 			bos.write(data);
 			bos.write(percent);
-		}
-		catch (Exception ex) { /* Should never happen */ }
+		} catch (Exception ex) { /* Should never happen */ }
 		this.setPayload(bos.toByteArray());
 	}
 }

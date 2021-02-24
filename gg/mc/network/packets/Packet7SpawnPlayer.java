@@ -17,8 +17,7 @@ public class Packet7SpawnPlayer extends Packet {
 			dos.write(Packet.getBytes(z));
 			dos.writeByte(yaw);
 			dos.writeByte(pitch);
-		}
-		catch (Exception ex) { /* Can never happen */ }
+		} catch (Exception ex) { /* Can never happen */ }
 		this.setPayload(bos.toByteArray());
 	}
 }

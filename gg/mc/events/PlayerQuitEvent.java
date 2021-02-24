@@ -8,28 +8,28 @@ public class PlayerQuitEvent extends Event {
 
 	private Player player;
 	private String quitMessage;
-	
+
 	public PlayerQuitEvent(Player player) {
 		this.player = player;
 		this.quitMessage = ChatColor.YELLOW + player.getUsername() + " left the game";
 	}
-	
+
 	@Override
 	public void setCancelled(boolean b) {
 		throw new CannotCancelEventException();
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public String getQuitMessage() {
 		return quitMessage;
 	}
-	
+
 	public void setQuitMessage(String message) {
 		quitMessage = message;
-		if (quitMessage == "") {
+		if (quitMessage.equals("")) {
 			quitMessage = null;
 		}
 	}

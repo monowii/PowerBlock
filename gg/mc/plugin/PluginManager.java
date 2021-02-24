@@ -2,9 +2,11 @@ package gg.mc.plugin;
 
 import gg.mc.ChatColor;
 import gg.mc.Player;
+import gg.mc.PowerBlock;
 import gg.mc.events.*;
 import gg.mc.exceptions.InvalidEventException;
 import gg.mc.exceptions.InvalidPluginException;
+import org.mozilla.javascript.Context;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,17 +18,15 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import org.mozilla.javascript.Context;
-
 public class PluginManager {
 
-	private ConcurrentHashMap<String, Plugin> plugins = new ConcurrentHashMap<String, Plugin>();
+	private ConcurrentHashMap<String, Plugin> plugins = new ConcurrentHashMap<>();
 	private Context context;
-	
+
 	public void load() {
 		plugins.clear();
 		context = Context.enter();
-		File[] filePlugins = new File(System.getProperty("user.dir") + File.separator + "plugins" + File.separator).listFiles();
+		File[] filePlugins = new File(PowerBlock.PLUGINS_DIR).listFiles();
 		for (int i = 0; i < filePlugins.length; i++) {
 			if (filePlugins[i].getAbsolutePath().endsWith(".js") && !filePlugins[i].isDirectory()) {
 				try {
@@ -34,24 +34,20 @@ public class PluginManager {
 					String author = "Unkown";
 					String pluginName = "Unknown";
 					String version = "Unknown";
-					ArrayList<String> script = new ArrayList<String>();
+					ArrayList<String> script = new ArrayList<>();
 					String in = br.readLine();
 					while (in != null) {
 						if (!in.startsWith("#")) {
 							script.add(in);
-						}
-						else if (in.replace('\t', ' ').trim().startsWith("//")) {
+						} else if (in.replace('\t', ' ').trim().startsWith("//")) {
 							// Comment :o
-						}
-						else {
+						} else {
 							String[] params = in.split(" ");
 							if (params[params.length - 2].equals("name")) {
 								pluginName = params[params.length - 1];
-							}
-							else if (params[params.length - 2].equals("author")) {
+							} else if (params[params.length - 2].equals("author")) {
 								author = params[params.length - 1];
-							}
-							else if (params[params.length - 2].equals("version")) {
+							} else if (params[params.length - 2].equals("version")) {
 								version = params[params.length - 1];
 							}
 						}
@@ -64,18 +60,16 @@ public class PluginManager {
 					Plugin plugin = new Plugin(this, pluginName, author, version, script);
 					plugins.put(pluginName, plugin);
 					plugin.onEnable();
-					Logger.getGlobal().info("Enabled plugin " + plugin.getPluginName());
-				}
-				catch (InvalidPluginException ex) {
+					Logger.getGlobal().info("Enabled plugin " + plugin.getName());
+				} catch (InvalidPluginException ex) {
 					ex.printStackTrace();
-				}
-				catch (IOException ex) {
+				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
 			}
 		}
 	}
-	
+
 	public void unload() {
 		Collection<Plugin> plgs = plugins.values();
 		Iterator<Plugin> iter = plgs.iterator();
@@ -84,7 +78,7 @@ public class PluginManager {
 		}
 		Context.exit();
 	}
-	
+
 	public Plugin[] getAllPlugins() {
 		Collection<Plugin> plgs = plugins.values();
 		Iterator<Plugin> iter = plgs.iterator();
@@ -94,11 +88,11 @@ public class PluginManager {
 		}
 		return allPlugins;
 	}
-	
+
 	public Plugin getPlugin(String name) {
 		return plugins.get(name);
 	}
-	
+
 	public void callEvent(Event event) {
 		try {
 			Collection<Plugin> plgs = plugins.values();
@@ -107,51 +101,42 @@ public class PluginManager {
 				while (iter.hasNext()) {
 					iter.next().onPlayerChat((PlayerChatEvent) event);
 				}
-			}
-			else if (event instanceof PlayerKickEvent) {
+			} else if (event instanceof PlayerKickEvent) {
 				while (iter.hasNext()) {
 					iter.next().onPlayerKick((PlayerKickEvent) event);
 				}
-			}
-			else if (event instanceof PlayerLoginEvent) {
+			} else if (event instanceof PlayerLoginEvent) {
 				while (iter.hasNext()) {
 					iter.next().onPlayerLogin((PlayerLoginEvent) event);
 				}
-			}
-			else if (event instanceof PlayerQuitEvent) {
+			} else if (event instanceof PlayerQuitEvent) {
 				while (iter.hasNext()) {
 					iter.next().onPlayerQuit((PlayerQuitEvent) event);
 				}
-			}
-			else if (event instanceof HeartbeatEvent) {
+			} else if (event instanceof HeartbeatEvent) {
 				while (iter.hasNext()) {
 					iter.next().onHeartBeat((HeartbeatEvent) event);
 				}
-			}
-			else if (event instanceof BlockBreakEvent) {
+			} else if (event instanceof BlockBreakEvent) {
 				while (iter.hasNext()) {
 					iter.next().onBlockBreak((BlockBreakEvent) event);
 				}
-			}
-			else if (event instanceof BlockPlaceEvent) {
+			} else if (event instanceof BlockPlaceEvent) {
 				while (iter.hasNext()) {
 					iter.next().onBlockPlace((BlockPlaceEvent) event);
 				}
-			}
-			else if (event instanceof PlayerMoveEvent) {
+			} else if (event instanceof PlayerMoveEvent) {
 				while (iter.hasNext()) {
 					iter.next().onPlayerMove((PlayerMoveEvent) event);
 				}
-			}
-			else {
+			} else {
 				throw new InvalidEventException(event);
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void callPlayerCommand(Player player, String command, String[] args) {
 		boolean handled = false;
 		try {
@@ -162,15 +147,14 @@ public class PluginManager {
 					handled = true;
 				}
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		if (!handled) {
 			player.sendMessage(ChatColor.WHITE + "Unknown command.");
 		}
 	}
-	
+
 	public void callConsoleCommand(String command, String[] args) {
 		boolean handled = false;
 		try {
@@ -181,15 +165,14 @@ public class PluginManager {
 					handled = true;
 				}
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		if (!handled) {
 			Logger.getGlobal().info("Unknown command '" + command + "'. Type 'help' for help.");
 		}
 	}
-	
+
 	public Context getContext() {
 		return context;
 	}

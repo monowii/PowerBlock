@@ -16,24 +16,24 @@ public class HeartbeatThread extends Thread {
 
 	private ConnectionThread connectionThread;
 	private boolean hasSuccess = false;
-	
+
 	public HeartbeatThread(ConnectionThread connectionThread) {
 		super("PowerBlock Heartbeat Thread");
 		this.connectionThread = connectionThread;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
 			while (true) {
 				try {
 					Configuration c = PowerBlock.getServer().getConfiguration();
-					HeartbeatEvent e = new HeartbeatEvent(c.getServerPort(), c.getMaxPlayers(), c.getServerName(), c.isPublic(), PowerBlock.getServer().getOnlinePlayers().length, c.isAllowWebClient());
+					HeartbeatEvent e = new HeartbeatEvent(c.getServerPort(), c.getMaxPlayers(), c.getServerName(), c.isPublic(), PowerBlock.getServer().getPlayers().length, c.isAllowWebClient());
 					PowerBlock.getServer().getPluginManager().callEvent(e);
 					if (e.isCancelled()) {
 						throw new HeartbeatCancelledException();
 					}
-					
+
 					StringBuilder sb = new StringBuilder();
 					sb.append(PowerBlock.getServer().getConfiguration().getHeartbeatUrl());
 					sb.append("port=" + e.getPort());
@@ -58,21 +58,17 @@ public class HeartbeatThread extends Thread {
 						Logger.getGlobal().info("Heartbeat No sucess, server says: " + respo.toString());
 						hasSuccess = true;
 					}
-				}
-				catch (IOException ex) {
+				} catch (IOException ex) {
 					ex.printStackTrace();
 					Logger.getGlobal().info("Failed to send heartbeat, is it down?");
-				}
-				catch (HeartbeatCancelledException ex) {
+				} catch (HeartbeatCancelledException ex) {
 					// In the future print which plugin cancelled?
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 				Thread.sleep(15000);
 			}
-		}
-		catch (InterruptedException ex) {
+		} catch (InterruptedException ex) {
 			// Server shutting down
 		}
 	}

@@ -3,15 +3,10 @@ package gg.mc.plugin;
 import gg.mc.Player;
 import gg.mc.PowerBlock;
 import gg.mc.events.*;
+import org.mozilla.javascript.*;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.EvaluatorException;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
 
 public class Plugin {
 
@@ -21,7 +16,7 @@ public class Plugin {
 	private String author;
 	private String version;
 	private String code;
-	
+
 	public Plugin(PluginManager pluginManager, String name, String author, String version, ArrayList<String> lines) {
 		this.pluginManager = pluginManager;
 		this.name = name;
@@ -34,7 +29,7 @@ public class Plugin {
 		sb.setLength(sb.length() - 1);
 		this.code = sb.toString();
 		scope = pluginManager.getContext().initStandardObjects();
-		
+
 		// Global variables
 		Object printWrapper = Context.javaToJS(new PrintWrapper(this, System.out), scope);
 		ScriptableObject.putProperty(scope, "console", printWrapper);
@@ -43,210 +38,182 @@ public class Plugin {
 		Object server = Context.javaToJS(PowerBlock.getServer(), scope);
 		ScriptableObject.putProperty(scope, "$", server);
 	}
-	
+
 	public void onEnable() {
 		try {
 			pluginManager.getContext().evaluateString(scope, code, name, 1, null);
 			Function onEnable = (Function) scope.get("onEnable", scope);
-			onEnable.call(pluginManager.getContext(), scope, scope, new Object[] { });
-		}
-		catch (ClassCastException ex) {
+			onEnable.call(pluginManager.getContext(), scope, scope, new Object[]{});
+		} catch (ClassCastException ex) {
 			Logger.getGlobal().info("Nag plugin author " + getAuthor() + " for not having an onEnable() function!");
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
 			ex.printStackTrace();
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onDisable() {
 		try {
 			Function onDisable = (Function) scope.get("onDisable", scope);
-			onDisable.call(pluginManager.getContext(), scope, scope, new Object[] { });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) {
+			onDisable.call(pluginManager.getContext(), scope, scope, new Object[]{});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
 			// No onDisable(), meh, idc
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onPlayerLogin(PlayerLoginEvent e) {
 		try {
 			Function playerLogin = (Function) scope.get("onPlayerLogin", scope);
-			playerLogin.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			playerLogin.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		try {
 			Function playerLogin = (Function) scope.get("onPlayerQuit", scope);
-			playerLogin.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			playerLogin.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onPlayerKick(PlayerKickEvent e) {
 		try {
 			Function playerKick = (Function) scope.get("onPlayerKick", scope);
-			playerKick.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			playerKick.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onPlayerChat(PlayerChatEvent e) {
 		try {
 			Function playerChat = (Function) scope.get("onPlayerChat", scope);
-			playerChat.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			playerChat.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onHeartBeat(HeartbeatEvent e) {
 		try {
 			Function heartBeat = (Function) scope.get("onHeartBeat", scope);
-			heartBeat.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			heartBeat.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onBlockBreak(BlockBreakEvent e) {
 		try {
 			Function blockBreak = (Function) scope.get("onBlockBreak", scope);
-			blockBreak.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			blockBreak.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onBlockPlace(BlockPlaceEvent e) {
 		try {
 			Function blockPlace = (Function) scope.get("onBlockPlace", scope);
-			blockPlace.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			blockPlace.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void onPlayerMove(PlayerMoveEvent e) {
 		try {
 			Function playerMove = (Function) scope.get("onPlayerMove", scope);
-			playerMove.call(pluginManager.getContext(), scope, scope, new Object[] { e });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + (ex.lineNumber() + 3));
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
+			playerMove.call(pluginManager.getContext(), scope, scope, new Object[]{e});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + (ex.lineNumber() + 3));
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public boolean onPlayerCommand(Player player, String command, String[] args) {
 		try {
 			Function playerCommand = (Function) scope.get("onPlayerCommand", scope);
-			Object result = playerCommand.call(pluginManager.getContext(), scope, scope, new Object[] { player, command, args });
+			Object result = playerCommand.call(pluginManager.getContext(), scope, scope, new Object[]{player, command, args});
 			return Context.toBoolean(result);
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + ex.lineNumber());
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
-			Logger.getGlobal().info("An error occurred handling the command '" + command + "' for the plugin " + this.getPluginName());
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + ex.lineNumber());
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
+			Logger.getGlobal().info("An error occurred handling the command '" + command + "' for the plugin " + this.getName());
 			ex.printStackTrace();
 		}
 		return false;
 	}
-	
+
 	public boolean onConsoleCommand(String command, String[] args) {
 		try {
 			Function consoleCommand = (Function) scope.get("onConsoleCommand", scope);
-			Object result = consoleCommand.call(pluginManager.getContext(), scope, scope, new Object[] { command, args });
+			Object result = consoleCommand.call(pluginManager.getContext(), scope, scope, new Object[]{command, args});
 			return Context.toBoolean(result);
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + ex.lineNumber());
-		}
-		catch (ClassCastException ex) { }
-		catch (Exception ex) {
-			Logger.getGlobal().info("An error occurred handling the command '" + command + "' for the plugin " + this.getPluginName());
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + ex.lineNumber());
+		} catch (ClassCastException ex) {
+		} catch (Exception ex) {
+			Logger.getGlobal().info("An error occurred handling the command '" + command + "' for the plugin " + this.getName());
 			ex.printStackTrace();
 		}
 		return false;
 	}
-	
+
 	public void callFunction(String function) {
 		try {
 			Function func = (Function) scope.get(function, scope);
-			func.call(pluginManager.getContext(), scope, scope, new Object[] { });
-		}
-		catch (EvaluatorException ex) {
-			Logger.getGlobal().info("Scheduler generated an evaluation error for plugin '" + getPluginName() + "'!");
-			Logger.getGlobal().info("[" + this.getPluginName() + "] Error in script, line " + ex.lineNumber());
-		}
-		catch (Exception ex) {
-			Logger.getGlobal().info("Scheduler generated an exception for plugin '" + getPluginName() + "'!");
+			func.call(pluginManager.getContext(), scope, scope, new Object[]{});
+		} catch (EvaluatorException ex) {
+			Logger.getGlobal().info("Scheduler generated an evaluation error for plugin '" + getName() + "'!");
+			Logger.getGlobal().info("[" + this.getName() + "] Error in script, line " + ex.lineNumber());
+		} catch (Exception ex) {
+			Logger.getGlobal().info("Scheduler generated an exception for plugin '" + getName() + "'!");
 			ex.printStackTrace();
 		}
 	}
-	
-	public String getPluginName() {
+
+	public String getName() {
 		return name;
 	}
-	
+
 	public String getAuthor() {
 		return author;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}

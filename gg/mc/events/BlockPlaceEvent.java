@@ -11,7 +11,7 @@ public class BlockPlaceEvent extends Event {
 	private short z;
 	private Position position;
 	private byte block;
-	
+
 	public BlockPlaceEvent(Player player, short x, short y, short z, byte block) {
 		this.player = player;
 		this.x = x;
@@ -20,27 +20,27 @@ public class BlockPlaceEvent extends Event {
 		this.position = new Position(x, y, z, (byte) 0, (byte) 0);
 		this.block = block;
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public short getXPos() {
 		return x;
 	}
-	
+
 	public short getYPos() {
 		return y;
 	}
-	
+
 	public short getZPos() {
 		return z;
 	}
-	
+
 	public byte getBlockPlaced() {
 		return block;
 	}
-	
+
 	public Position getPosition() {
 		return position;
 	}

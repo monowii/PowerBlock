@@ -10,22 +10,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class WorldManager {
-
-	public static final int FLATMAP = 0;
-	public static final int EMPTY = 1;
-	public static final int PIXEL_ART = 2;
-	
 	private static boolean alreadyStarted = false;
-	
-	private ConcurrentHashMap<String, World> worlds = new ConcurrentHashMap<String, World>();
-	
+
+	private final ConcurrentHashMap<String, World> worlds = new ConcurrentHashMap<>();
+
 	public WorldManager() throws ServerRunningException {
 		if (alreadyStarted) {
 			throw new ServerRunningException();
 		}
 		alreadyStarted = true;
 	}
-	
+
 	public World getWorld(String name) {
 		World w = worlds.get(name);
 		if (w == null) {
@@ -33,11 +28,11 @@ public class WorldManager {
 		}
 		return w;
 	}
-	
+
 	public void createWorld(String name, int length, int depth, int height) {
 		createWorld(name, (short) length, (short) depth, (short) height);
 	}
-	
+
 	public void createWorld(String name, short length, short depth, short height) {
 		if (worlds.get(name) != null) {
 			throw new WorldExistsException(name);
@@ -51,7 +46,7 @@ public class WorldManager {
 		worlds.put(name, new World(name, length, depth, height));
 		PowerBlock.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "World generation finished");
 	}
-	
+
 	public void saveAllWorlds() {
 		Collection<World> w = worlds.values();
 		Iterator<World> iter = w.iterator();
@@ -59,7 +54,7 @@ public class WorldManager {
 			iter.next().save();
 		}
 	}
-	
+
 	public void unloadWorld(String name, boolean save) {
 		if (save) {
 			getWorld(name).save();
@@ -67,11 +62,11 @@ public class WorldManager {
 		worlds.remove(name);
 		Logger.getGlobal().info("Removed world '" + name + "'.");
 	}
-	
+
 	public World getMainWorld() {
 		return getWorld("world");
 	}
-	
+
 	public int getTotalWorlds() {
 		return worlds.size();
 	}
