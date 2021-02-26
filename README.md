@@ -7,6 +7,7 @@ New features:
 * now compatible with classicube heartbeat
 * added new configuration parameters
 * added new basic console commands (save, reload, players, say <message>)
+* fix multiworld issues
 
 ## Compilation
 
