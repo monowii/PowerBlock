@@ -21,6 +21,10 @@ public class WorldManager {
 		alreadyStarted = true;
 	}
 
+	public World[] getWorlds() {
+		return worlds.values().toArray(new World[0]);
+	}
+
 	public World getWorld(String name) {
 		World w = worlds.get(name);
 		if (w == null) {
@@ -45,6 +49,23 @@ public class WorldManager {
 		PowerBlock.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "World generation beginning!");
 		worlds.put(name, new World(name, length, depth, height));
 		PowerBlock.getServer().broadcastMessage(ChatColor.DARK_PURPLE + "World generation finished");
+	}
+
+	public void loadWorld(String name) {
+		if (worlds.get(name) != null) {
+			throw new WorldExistsException(name);
+		}
+		if (!World.exists(name)) {
+			throw new NoSuchWorldException(name);
+		}
+		worlds.put(name, new World(name));
+	}
+
+	public void unloadWorld(String name) {
+		if (worlds.get(name) == null || !World.exists(name)) {
+			throw new NoSuchWorldException(name);
+		}
+		worlds.remove(name);
 	}
 
 	public void saveAllWorlds() {

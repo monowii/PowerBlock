@@ -20,6 +20,10 @@ public class Position {
 		this((short) x, (short) y, (short) z, yaw, pitch);
 	}
 
+	public Position(short x, short y, short z) {
+		this(x, y, z, (byte)0, (byte)0);
+	}
+
 	public void add(short x, short y, short z) {
 		posX += x;
 		posY += y;

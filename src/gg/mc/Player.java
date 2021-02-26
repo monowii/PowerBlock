@@ -84,25 +84,26 @@ public class Player {
 			if (incoming instanceof CPacketSetBlock) {
 				CPacketSetBlock packet = (CPacketSetBlock) incoming;
 
-				byte b1 = PowerBlock.getServer().getWorldManager().getMainWorld().getBlockAt(packet.getX(), packet.getY(), packet.getZ());
+				Position pos = new Position(packet.getX(), packet.getY(), packet.getZ());
+				byte b1 = getWorld().getBlockAt(packet.getX(), packet.getY(), packet.getZ());
 				if (packet.getMode() == 0x1) {
 					// Event
-					BlockPlaceEvent e = new BlockPlaceEvent(this, packet.getX(), packet.getY(), packet.getZ(), packet.getBlockType());
+					BlockPlaceEvent e = new BlockPlaceEvent(this, pos, packet.getBlockType());
 					PowerBlock.getServer().getPluginManager().callEvent(e);
 					if (e.isCancelled()) {
 						packetOutputStream.writePacket(new SPacketSetBlock(packet.getX(), packet.getY(), packet.getZ(), b1));
 						return;
 					}
-					PowerBlock.getServer().getWorldManager().getMainWorld().setBlockAt(e.getPosition(), e.getBlockPlaced());
+					getWorld().setBlockAt(e.getPosition(), packet.getBlockType());
 				} else {
 					// Event
-					BlockBreakEvent e = new BlockBreakEvent(this, packet.getX(), packet.getY(), packet.getZ(), b1, packet.getBlockType());
+					BlockBreakEvent e = new BlockBreakEvent(this, pos, b1, packet.getBlockType());
 					PowerBlock.getServer().getPluginManager().callEvent(e);
 					if (e.isCancelled()) {
 						packetOutputStream.writePacket(new SPacketSetBlock(packet.getX(), packet.getY(), packet.getZ(), b1));
 						return;
 					}
-					PowerBlock.getServer().getWorldManager().getMainWorld().setBlockAt(e.getPosition(), Block.Air);
+					getWorld().setBlockAt(e.getPosition(), Block.Air);
 				}
 			} else if (incoming instanceof CPacketPositionOrientation) {
 				CPacketPositionOrientation packet = (CPacketPositionOrientation) incoming;

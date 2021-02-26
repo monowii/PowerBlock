@@ -73,8 +73,9 @@ public class World {
 			dis.read(data);
 			dis.close();
 			gis.close();
+			Logger.getGlobal().warning("Loaded world '" + name + "'");
 		} catch (Exception ex) {
-			Logger.getGlobal().warning("Failed to load map '" + name + "'!");
+			Logger.getGlobal().warning("Failed to load world '" + name + "'!");
 		}
 	}
 
@@ -96,8 +97,9 @@ public class World {
 			dos.close();
 			gos.flush();
 			gos.close();
+			Logger.getGlobal().warning("Saved world '" + name + "'");
 		} catch (Exception ex) {
-			Logger.getGlobal().warning("Failed to save map '" + name + "'!");
+			Logger.getGlobal().warning("Failed to save world '" + name + "'!");
 			ex.printStackTrace();
 		}
 	}
