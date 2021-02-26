@@ -1,5 +1,8 @@
-server.properties
-rhino-1.7.13.jar
+*.properties
+*.jar
 worlds/
 plugins/
 logs/
+out/
+.idea/
+*.iml
