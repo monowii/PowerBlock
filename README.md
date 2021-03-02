@@ -1,6 +1,9 @@
-PowerBlockFork, a Minecraft classic server!
+PowerBlockFork
+==============
 
-New features:
+PowerBlockFork is a Minecraft classic server, forked from PowerBlock
+
+## New features from PowerBlock
 
 * better logging, saving server logs
 * handle process termination
