@@ -1,86 +1,66 @@
 package gg.mc;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.Scanner;
-import java.util.logging.Logger;
+import java.io.*;
+import java.util.Properties;
 
 public class Configuration {
+	public static String CONFIG_FILE = System.getProperty("user.dir") + File.separator + "server.properties";
 
 	private String serverName = "PowerBlockFork Server";
+	private String serverMotd = "Building is fun!";
 	private int serverPort = 25565;
-	private int maxPlayers = 10;
-	private String motd = "Building is fun!";
-	private boolean isPublic = false;
-	private boolean allowWebClient = false;
+	private int serverMaxPlayers = 10;
+	private boolean serverVerifyUsername = true;
+	private boolean heartbeatEnabled = true;
 	private String heartbeatUrl = "https://classicube.net/heartbeat.jsp?";
-	private boolean hearbeatEnabled = true;
-	private boolean verifyUsername = true;
+	private boolean heartbeatIsPublic = false;
+	private boolean heartbeatAllowWebClient = false;
+
+	private Properties properties = new Properties();
 
 	public Configuration() {
-		try {
-			Scanner s = new Scanner(new FileReader(System.getProperty("user.dir") + File.separator + "server.properties"));
-			s.useDelimiter(System.getProperty("line.separator"));
-			while (s.hasNext()) {
-				String[] params = s.next().split("=");
-				switch (params[0]) {
-					case "serverName":
-						serverName = params[1];
-						break;
-					case "serverPort":
-						serverPort = Integer.parseInt(params[1]);
-						break;
-					case "maxPlayers":
-						maxPlayers = Integer.parseInt(params[1]);
-						break;
-					case "motd":
-						motd = params[1];
-						break;
-					case "isPublic":
-						isPublic = Boolean.parseBoolean(params[1]);
-						break;
-					case "allowWebClient":
-						allowWebClient = Boolean.parseBoolean(params[1]);
-						break;
-					case "heartbeatUrl":
-						heartbeatUrl = params[1];
-						break;
-					case "hearbeatEnabled":
-						hearbeatEnabled = Boolean.parseBoolean(params[1]);
-						break;
-					case "verifyUsername":
-						verifyUsername = Boolean.parseBoolean(params[1]);
-						break;
-				}
-			}
-			s.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			Logger.getGlobal().info("No config!");
-			generateConfig();
-		}
+		load();
 	}
 
-	private void generateConfig() {
+	public void load() {
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(System.getProperty("user.dir") + File.separator + "server.properties"));
-			String s = System.getProperty("line.separator");
-			bw.write("serverName=" + serverName + s);
-			bw.write("serverPort=" + serverPort + s);
-			bw.write("maxPlayers=" + maxPlayers + s);
-			bw.write("motd=" + motd + s);
-			bw.write("isPublic=" + isPublic + s);
-			bw.write("allowWebClient=" + allowWebClient + s);
-			bw.write("heartbeatUrl=" + heartbeatUrl + s);
-			bw.write("hearbeatEnabled=" + hearbeatEnabled + s);
-			bw.write("verifyUsername=" + verifyUsername);
-			bw.flush();
-			bw.close();
-		} catch (Exception ex) {
-			Logger.getGlobal().info("Failed to generate config :-(");
-			ex.printStackTrace();
+			FileInputStream fis = new FileInputStream(CONFIG_FILE);
+			properties.load(fis);
+		} catch (FileNotFoundException e) {
+			System.out.println("Default config file not found, generating defaults");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		properties.putIfAbsent("server.name", serverName);
+		properties.putIfAbsent("server.motd", serverMotd);
+		properties.putIfAbsent("server.port", String.valueOf(serverPort));
+		properties.putIfAbsent("server.maxPlayers", String.valueOf(serverMaxPlayers));
+		properties.putIfAbsent("server.verifyUsername", String.valueOf(serverVerifyUsername));
+		properties.putIfAbsent("heartbeat.enabled", String.valueOf(heartbeatEnabled));
+		properties.putIfAbsent("heartbeat.url", heartbeatUrl);
+		properties.putIfAbsent("heartbeat.isPublic", String.valueOf(heartbeatIsPublic));
+		properties.putIfAbsent("heartbeat.allowWebClient", String.valueOf(heartbeatAllowWebClient));
+
+		serverName = properties.getProperty("server.name");
+		serverMotd = properties.getProperty("server.motd");
+		serverPort = Integer.valueOf(properties.getProperty("server.port"));
+		serverMaxPlayers = Integer.valueOf(properties.getProperty("server.maxPlayers"));
+		serverVerifyUsername = Boolean.valueOf(properties.getProperty("server.verifyUsername"));
+		heartbeatEnabled = Boolean.valueOf(properties.getProperty("heartbeat.enabled"));
+		heartbeatUrl = properties.getProperty("heartbeat.url");
+		heartbeatIsPublic = Boolean.valueOf(properties.getProperty("heartbeat.isPublic"));
+		heartbeatAllowWebClient = Boolean.valueOf(properties.getProperty("heartbeat.allowWebClient"));
+	}
+
+	public void save() {
+		try {
+			FileOutputStream fos = new FileOutputStream(CONFIG_FILE);
+			properties.store(fos, "Here you can't place raw : or =, you must escape them with \\: or \\=, see https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -92,40 +72,40 @@ public class Configuration {
 		this.serverName = serverName;
 	}
 
+	public String getServerMotd() {
+		return serverMotd;
+	}
+
+	public void setServerMotd(String serverMotd) {
+		this.serverMotd = serverMotd;
+	}
+
 	public int getServerPort() {
 		return serverPort;
 	}
 
-	public int getMaxPlayers() {
-		return maxPlayers;
+	public int getServerMaxPlayers() {
+		return serverMaxPlayers;
 	}
 
-	public void setMaxPlayers(int maxPlayers) {
-		this.maxPlayers = maxPlayers;
+	public void setServerMaxPlayers(int serverMaxPlayers) {
+		this.serverMaxPlayers = serverMaxPlayers;
 	}
 
-	public String getMotd() {
-		return motd;
+	public boolean isServerVerifyUsername() {
+		return serverVerifyUsername;
 	}
 
-	public void setMotd(String motd) {
-		this.motd = motd;
+	public void setServerVerifyUsername(boolean serverVerifyUsername) {
+		this.serverVerifyUsername = serverVerifyUsername;
 	}
 
-	public boolean isPublic() {
-		return isPublic;
+	public boolean isHeartbeatEnabled() {
+		return heartbeatEnabled;
 	}
 
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
-
-	public boolean isAllowWebClient() {
-		return allowWebClient;
-	}
-
-	public void setAllowWebClient(boolean allowWebClient) {
-		this.allowWebClient = allowWebClient;
+	public void setHeartbeatEnabled(boolean heartbeatEnabled) {
+		this.heartbeatEnabled = heartbeatEnabled;
 	}
 
 	public String getHeartbeatUrl() {
@@ -136,16 +116,19 @@ public class Configuration {
 		this.heartbeatUrl = heartbeatUrl;
 	}
 
-	public boolean isHearbeatEnabled() {
-		return hearbeatEnabled;
+	public boolean isPublic() {
+		return heartbeatIsPublic;
 	}
 
-	public boolean isVerifyUsername() {
-		return verifyUsername;
+	public void setPublic(boolean heartbeatIsPublic) {
+		this.heartbeatIsPublic = heartbeatIsPublic;
 	}
 
-	public void setVerifyUsername(boolean verifyUsername) {
-		this.verifyUsername = verifyUsername;
+	public boolean isAllowWebClient() {
+		return heartbeatAllowWebClient;
 	}
 
+	public void setAllowWebClient(boolean heartbeatAllowWebClient) {
+		this.heartbeatAllowWebClient = heartbeatAllowWebClient;
+	}
 }

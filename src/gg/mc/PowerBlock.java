@@ -19,8 +19,7 @@ public class PowerBlock {
 	public static final String WORLDS_DIR = System.getProperty("user.dir") + File.separator + "worlds" + File.separator;
 	public static final String PLUGINS_DIR = System.getProperty("user.dir") + File.separator + "plugins" + File.separator;
 	public static final String LOGS_DIR = System.getProperty("user.dir") + File.separator + "logs" + File.separator;
-
-
+	static boolean isStopping = false;
 	private static PowerBlock instance;
 	private Configuration configuration = new Configuration();
 	private Thread connectionThread = new ConnectionThread();
@@ -95,7 +94,7 @@ public class PowerBlock {
 		pluginManager = new PluginManager();
 		scheduler = new Scheduler();
 		serverThread.start();
-		if (configuration.isHearbeatEnabled()) {
+		if (configuration.isHeartbeatEnabled()) {
 			Logger.getGlobal().info("starting Heartbeat thread");
 			heartbeatThread.start();
 		}
@@ -114,7 +113,11 @@ public class PowerBlock {
 	}
 
 	public void stop() {
-		Runtime.getRuntime().removeShutdownHook(shutdownThread);
+		if (isStopping) {
+			return;
+		}
+		isStopping = true;
+
 		Logger.getGlobal().info("Server shutting down...");
 		worldManager.saveAllWorlds();
 		Player[] players = getPlayers();
@@ -125,6 +128,7 @@ public class PowerBlock {
 		connectionThread.interrupt();
 		serverThread.interrupt();
 		heartbeatThread.interrupt();
+		configuration.save();
 		Logger.getGlobal().info("Server stopped!");
 		System.exit(0);
 	}

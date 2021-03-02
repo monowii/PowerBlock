@@ -37,7 +37,7 @@ public class World {
 		this.height = height;
 		data = new byte[length * depth * height];
 		Arrays.fill(data, (byte) 0);
-		for (int i = 0; i < (length * depth); i++) {
+		for (int i = 0; i < (length * depth * (height / 2)); i++) {
 			data[i] = Block.Grass;
 		}
 		Arrays.fill(availableEids, true);
@@ -70,7 +70,7 @@ public class World {
 			byte pitch = dis.readByte();
 			spawn = new Position(x, y, z, yaw, pitch);
 			data = new byte[length * depth * height];
-			dis.read(data);
+			dis.readFully(data);
 			dis.close();
 			gis.close();
 			Logger.getGlobal().warning("Loaded world '" + name + "'");
@@ -94,8 +94,8 @@ public class World {
 			dos.writeByte(spawn.getPitch());
 			dos.write(data);
 			dos.flush();
-			dos.close();
 			gos.flush();
+			dos.close();
 			gos.close();
 			Logger.getGlobal().warning("Saved world '" + name + "'");
 		} catch (Exception ex) {

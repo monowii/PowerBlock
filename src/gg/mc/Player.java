@@ -57,14 +57,14 @@ public class Player {
 				byte[] token = (connectionThread.getSalt() + ident.getUsername()).getBytes(StandardCharsets.UTF_8);
 				md5.update(token);
 				String verificationToken = new BigInteger(1, md5.digest()).toString(16);
-				if (!verificationToken.equals(ident.getVerificationKey()) && PowerBlock.getServer().getConfiguration().isVerifyUsername()) {
+				if (!verificationToken.equals(ident.getVerificationKey()) && PowerBlock.getServer().getConfiguration().isServerVerifyUsername()) {
 					kick("Failed to verify username!", Reason.LOST_CONNECTION);
 					return;
 				}
 				username = ident.getUsername().trim();
 				loggedIn = true;
 				Configuration config = PowerBlock.getServer().getConfiguration();
-				packetOutputStream.writePacket(new SPacketServerIdentification((byte) 7, config.getServerName(), config.getMotd(), (byte) 0x0));
+				packetOutputStream.writePacket(new SPacketServerIdentification((byte) 7, config.getServerName(), config.getServerMotd(), (byte) 0x0));
 				connectionThread.addPlayer(this);
 				sendWorld(PowerBlock.getServer().getWorldManager().getMainWorld());
 

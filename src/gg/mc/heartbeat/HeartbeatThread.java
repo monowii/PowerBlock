@@ -28,7 +28,7 @@ public class HeartbeatThread extends Thread {
 			while (true) {
 				try {
 					Configuration c = PowerBlock.getServer().getConfiguration();
-					HeartbeatEvent e = new HeartbeatEvent(c.getServerPort(), c.getMaxPlayers(), c.getServerName(), c.isPublic(), PowerBlock.getServer().getPlayers().length, c.isAllowWebClient());
+					HeartbeatEvent e = new HeartbeatEvent(c.getServerPort(), c.getServerMaxPlayers(), c.getServerName(), c.isPublic(), PowerBlock.getServer().getPlayers().length, c.isAllowWebClient());
 					PowerBlock.getServer().getPluginManager().callEvent(e);
 					if (e.isCancelled()) {
 						throw new HeartbeatCancelledException();
@@ -66,7 +66,7 @@ public class HeartbeatThread extends Thread {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				Thread.sleep(15000);
+				Thread.sleep(44000);
 			}
 		} catch (InterruptedException ex) {
 			// Server shutting down

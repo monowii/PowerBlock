@@ -21,7 +21,7 @@ public class Position {
 	}
 
 	public Position(short x, short y, short z) {
-		this(x, y, z, (byte)0, (byte)0);
+		this(x, y, z, (byte) 0, (byte) 0);
 	}
 
 	public void add(short x, short y, short z) {
